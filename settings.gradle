@@ -1,1 +1,3 @@
 include 'tank-usb-local-controller'
+include 'tank-controller-api'
+
