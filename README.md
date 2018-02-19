@@ -28,6 +28,21 @@ curl -H 'Content-Type: application/json' -X PUT -d '{"movement":"RIGHT"}' localh
 curl -H 'Content-Type: application/json' -X PUT -d '{"movement":"STOP"}' localhost:8080/tank-controller/movement
 ```
 
+## Tank Controller
+
+In tank submodule you can find a code to upload onto tank arduino device.
+It waits for steering characters on USB serial port, in order to move:
+- 'w' - move forward
+- 's' - move backwards
+- 'a' - turn left, 
+- 'd' - turn right
+
+You can upload the code using Arduino IDE and test it with Arduino Serial Monitor.
+Remember to choose Arduino Uno device and set baud rate to 9600.
+
+You can review tank specification: https://www.robotshop.com/en/dfrobotshop-rover-tracked-robot-basic-kit.html
+
 ## TODO
 
 https://sourceforge.net/projects/javaarduinolibrary/ 
+   
