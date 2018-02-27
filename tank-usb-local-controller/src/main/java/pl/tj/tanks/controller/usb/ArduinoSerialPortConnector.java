@@ -5,82 +5,46 @@ import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Optional;
 
 public class ArduinoSerialPortConnector {
 
 
     public static void main(String[] args) throws IOException {
-        SerialPort port = null;
+        Optional<SerialPort> port = new ArduinoSerialPortConnector().findArduinoUnoSerialPort();
+        SerialPort serialPort = port.orElseThrow(IllegalStateException::new);
         try {
-            SerialPort[] commPorts = SerialPort.getCommPorts();
-            for (int i = 0; i < commPorts.length; i++) {
-                System.out.println(commPorts[i].getDescriptivePortName());
-                System.out.println(commPorts[i].getSystemPortName());
-            }
 
-            port = SerialPort.getCommPort("/dev/cu.usbmodem1431");
-//            port = SerialPort.getCommPort("/dev/tty.usbmodem1431");
-            port.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING & SerialPort.TIMEOUT_WRITE_SEMI_BLOCKING, 500, 500);
-            port.setBaudRate(9600);
+            serialPort.setBaudRate(9600);
 
-            port.openPort();
-            Thread.sleep(5000);
+            serialPort.openPort();
+
             System.out.println("Sleeping while arduino resetting");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {/*NOOP*/ }
 
-            System.out.println("Port open     :" + port.isOpen());
-            System.out.println("Port baud rate:" + port.getBaudRate());
-            System.out.println("Data bits     :" + port.getNumDataBits());
-            System.out.println("Stop bits     :" + port.getNumStopBits());
+            System.out.println("Port open     :" + serialPort.isOpen());
+            System.out.println("Port baud rate:" + serialPort.getBaudRate());
+            System.out.println("Data bits     :" + serialPort.getNumDataBits());
+            System.out.println("Stop bits     :" + serialPort.getNumStopBits());
 
-            port.addDataListener(new SerialPortDataListener() {
-                @Override
-                public int getListeningEvents() {
-                    return SerialPort.LISTENING_EVENT_DATA_AVAILABLE
-                            & SerialPort.LISTENING_EVENT_DATA_RECEIVED
-                            & SerialPort.LISTENING_EVENT_DATA_WRITTEN;
-
-                }
-
-                @Override
-                public void serialEvent(SerialPortEvent event) {
-                    System.out.println("Event1: " + event.getEventType());
-                    System.out.println("Event2: " + event.getSerialPort().getSystemPortName());
-                    System.out.println("Event3: " + new String(event.getReceivedData()));
-                }
-            });
-
+            readStream(serialPort);
             while(true){
-                OutputStream outputStream = port.getOutputStream();
-                outputStream.write("test\r\n".getBytes(Charset.forName("ASCII")));
-                outputStream.write("test\n".getBytes(Charset.forName("ASCII")));
-                outputStream.flush();
-                Thread.sleep(300);
-                System.out.println(".");
+                serialPort.getOutputStream().write("wsda".getBytes());
+                serialPort.getOutputStream().flush();
+                Thread.sleep(500);
             }
 
-//            outputStream.close();
-
-//            System.out.println("Reading...");
-//            InputStream reader = port.getInputStream();
-//            byte[] buffer = new byte[1000];
-//            while (reader.available() > 0) {
-////                outputStream.write('a');
-////                outputStream.flush();
-//                outputStream.write("Hellof\r\n".getBytes());
-//                System.out.println("Available: " + port.bytesAvailable());
-//                int numRead = reader.read(buffer);
-//                System.out.println("Read " + numRead + " bytes: " + new String(buffer, 0, numRead));
-//            }
-//            Thread.sleep(4000);
-
-        } catch (Exception e) {
+        } catch (Exception e){
             e.printStackTrace();
         } finally {
-
             System.out.println("Closing");
-            port.closePort();
+            port.ifPresent(SerialPort::closePort);
         }
 
 
@@ -88,6 +52,68 @@ public class ArduinoSerialPortConnector {
 //        arduinoConnector.openConnection();
 //        arduinoConnector.serialWrite('w');
 //        arduinoConnector.closeConnection();
+    }
+
+    private static void readStream(SerialPort serialPort) throws IOException {
+        System.out.println("Reading...");
+
+        new Thread(()->{
+            InputStream reader = serialPort.getInputStream();
+            byte[] buffer = new byte[1000];
+            try {
+                while (true) {
+                    if(reader.available() > 0){
+                        System.out.println("Available: " + serialPort.bytesAvailable());
+                        int numRead = reader.read(buffer);
+                        System.out.println("Read " + numRead + " bytes: " + new String(buffer, 0, numRead));
+                    }
+                    Thread.sleep(500);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }).start();
+    }
+
+    public Optional<SerialPort> findArduinoUnoSerialPort() {
+        //"/dev/cu.usbmodem1431"
+        SerialPort[] commPorts = SerialPort.getCommPorts();
+        return Arrays.stream(commPorts)
+                .filter(port -> port.getDescriptivePortName().contains("Arduino Uno"))
+                .findAny();
+    }
+
+    public void printCommPorts() {
+        SerialPort[] commPorts = SerialPort.getCommPorts();
+        for (int i = 0; i < commPorts.length; i++) {
+            System.out.println(commPorts[i].getDescriptivePortName() +
+                    "::" +
+                    commPorts[i].getSystemPortName());
+        }
+    }
+
+    public void addDataListener(SerialPort serialPort){
+
+        boolean dataListenerAdded = serialPort.addDataListener(new SerialPortDataListener() {
+            @Override
+            public int getListeningEvents() {
+                return SerialPort.LISTENING_EVENT_DATA_AVAILABLE
+                        & SerialPort.LISTENING_EVENT_DATA_RECEIVED
+                        & SerialPort.LISTENING_EVENT_DATA_WRITTEN;
+
+            }
+
+            @Override
+            public void serialEvent(SerialPortEvent event) {
+                System.out.println("Event1: " + event.getEventType());
+                System.out.println("Event2: " + event.getSerialPort().getSystemPortName());
+                System.out.println("Event3: " + new String(event.getReceivedData()));
+            }
+        });
+        System.out.println(":::"+dataListenerAdded);
     }
 }
 ///dev/cu.usbmodem1431
