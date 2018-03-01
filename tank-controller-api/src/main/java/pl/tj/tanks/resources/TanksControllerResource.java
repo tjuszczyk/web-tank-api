@@ -1,28 +1,30 @@
 package pl.tj.tanks.resources;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import pl.tj.tanks.services.TankController;
 
-@Controller
-@RequestMapping("/tank-controller")
+@RestController
+@RequestMapping("/api/tank-controller")
 public class TanksControllerResource {
 
-    private volatile MovementDetail currentMovement = new MovementDetail(MovementDetail.MovementDirection.STOPPED);
+    @Autowired
+    TankController tankController;
 
-    @RequestMapping(path = "/movement", method = RequestMethod.PUT)
     @ResponseBody
+    @PutMapping(path = "/movement", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> move(@RequestBody MovementDetail movementDetail) {
-        this.currentMovement = movementDetail;
+        tankController.moveTank(movementDetail);
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(path = "/movement", method = RequestMethod.GET)
     @ResponseBody
+    @GetMapping(path = "/movement", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MovementDetail> currentMovement() {
-        return ResponseEntity.ok(this.currentMovement);
+        return ResponseEntity.ok(
+                tankController.currentTankMovement()
+        );
     }
 }

@@ -27,7 +27,14 @@ curl -H 'Content-Type: application/json' -X PUT -d '{"movement":"LEFT"}' localho
 curl -H 'Content-Type: application/json' -X PUT -d '{"movement":"RIGHT"}' localhost:8080/tank-controller/movement
 curl -H 'Content-Type: application/json' -X PUT -d '{"movement":"STOP"}' localhost:8080/tank-controller/movement
 ```
+or
 
+```bash
+http PUT localhost:8080/tank-controller/movement Content-Type:application/json movementDirection=FORWARD
+http PUT localhost:8080/tank-controller/movement Content-Type:application/json movementDirection=BACKWARD
+http PUT localhost:8080/tank-controller/movement Content-Type:application/json movementDirection=LEFT
+http PUT localhost:8080/tank-controller/movement Content-Type:application/json movementDirection=RIGHT
+```
 ## Tank Controller
 
 In tank submodule you can find a code to upload onto tank arduino device.
