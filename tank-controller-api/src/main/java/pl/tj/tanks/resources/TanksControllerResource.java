@@ -22,7 +22,7 @@ public class TanksControllerResource {
 
     @ResponseBody
     @GetMapping(path = "/movement", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MovementDetail> currentMovement() {
+    public ResponseEntity<MovementDetail> currentMovement() throws Exception {
         return ResponseEntity.ok(
                 tankController.currentTankMovement()
         );

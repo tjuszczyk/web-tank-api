@@ -7,7 +7,7 @@ public class MovementDetail {
     public final MovementDirection direction;
 
     @JsonCreator
-    public MovementDetail(@JsonProperty("movement") MovementDirection direction) {
+    public MovementDetail(@JsonProperty("direction") MovementDirection direction) {
         this.direction = direction;
     }
 

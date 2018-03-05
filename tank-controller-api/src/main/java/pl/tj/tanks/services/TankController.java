@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import pl.tj.tanks.resources.MovementDetail;
 
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
+
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Scope(value = SCOPE_SINGLETON)
 public class TankController {
 
     private volatile MovementDetail currentMovement = new MovementDetail(MovementDetail.MovementDirection.STOPPED);
