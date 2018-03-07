@@ -3,16 +3,58 @@ package pl.tj.tanks.controller.usb;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Optional;
 
 public class ArduinoSerialPortConnector {
+    public static final Logger LOG = LoggerFactory.getLogger(ArduinoSerialPortConnector.class);
 
+    private SerialPort serialPort;
+
+    public ArduinoSerialPortConnector() {
+        Optional<SerialPort> port = new ArduinoSerialPortConnector().findArduinoUnoSerialPort();
+        serialPort = port.orElse(null);
+        connectToArduinoSerialPort();
+    }
+
+    public void connectToArduinoSerialPort() {
+        try {
+            if (serialPort != null) {
+                serialPort.setBaudRate(9600);
+                serialPort.openPort();
+
+                LOG.info("Sleeping while arduino resetting");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {/*NOOP*/ }
+
+                LOG.info("Port open     :" + serialPort.isOpen());
+                LOG.info("Port baud rate:" + serialPort.getBaudRate());
+                LOG.info("Data bits     :" + serialPort.getNumDataBits());
+                LOG.info("Stop bits     :" + serialPort.getNumStopBits());
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (serialPort != null) {
+                LOG.info("Closing arduino serial port");
+                serialPort.closePort();
+            }
+        }
+
+    }
+
+
+    public String sendTankCommand(Character character) {
+
+        return "FAILED";
+    }
 
     public static void main(String[] args) throws IOException {
         Optional<SerialPort> port = new ArduinoSerialPortConnector().findArduinoUnoSerialPort();
@@ -34,13 +76,13 @@ public class ArduinoSerialPortConnector {
             System.out.println("Stop bits     :" + serialPort.getNumStopBits());
 
             readStream(serialPort);
-            while(true){
+            while (true) {
                 serialPort.getOutputStream().write("wsda".getBytes());
                 serialPort.getOutputStream().flush();
                 Thread.sleep(500);
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             System.out.println("Closing");
@@ -57,12 +99,12 @@ public class ArduinoSerialPortConnector {
     private static void readStream(SerialPort serialPort) throws IOException {
         System.out.println("Reading...");
 
-        new Thread(()->{
+        new Thread(() -> {
             InputStream reader = serialPort.getInputStream();
             byte[] buffer = new byte[1000];
             try {
                 while (true) {
-                    if(reader.available() > 0){
+                    if (reader.available() > 0) {
                         System.out.println("Available: " + serialPort.bytesAvailable());
                         int numRead = reader.read(buffer);
                         System.out.println("Read " + numRead + " bytes: " + new String(buffer, 0, numRead));
@@ -95,7 +137,7 @@ public class ArduinoSerialPortConnector {
         }
     }
 
-    public void addDataListener(SerialPort serialPort){
+    public void addDataListener(SerialPort serialPort) {
 
         boolean dataListenerAdded = serialPort.addDataListener(new SerialPortDataListener() {
             @Override
@@ -113,7 +155,7 @@ public class ArduinoSerialPortConnector {
                 System.out.println("Event3: " + new String(event.getReceivedData()));
             }
         });
-        System.out.println(":::"+dataListenerAdded);
+        System.out.println(":::" + dataListenerAdded);
     }
 }
 ///dev/cu.usbmodem1431

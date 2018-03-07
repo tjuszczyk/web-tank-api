@@ -1,0 +1,182 @@
+{
+	"info": {
+		"name": "tank-api",
+		"_postman_id": "6b779d9b-08f0-4db9-afb2-cfbaa59ab025",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get tank current movement",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:8080/api/tank-controller/movement",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tank-controller",
+						"movement"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Move tank - left",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"direction\":\"LEFT\"\t\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/tank-controller/movement",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tank-controller",
+						"movement"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Move tank - right",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"direction\":\"RIGHT\"\t\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/tank-controller/movement",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tank-controller",
+						"movement"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Move tank - forward",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"direction\":\"FORWARD\"\t\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/tank-controller/movement",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tank-controller",
+						"movement"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Move tank - backward",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"direction\":\"LEFT\"\t\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/tank-controller/movement",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tank-controller",
+						"movement"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Move tank - stopped",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"direction\":\"STOPPED\"\t\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/api/tank-controller/movement",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tank-controller",
+						"movement"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

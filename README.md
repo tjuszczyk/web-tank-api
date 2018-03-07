@@ -49,7 +49,28 @@ Remember to choose Arduino Uno device and set baud rate to 9600.
 
 You can review tank specification: https://www.robotshop.com/en/dfrobotshop-rover-tracked-robot-basic-kit.html
 
-## TODO
+## Lesson 4
 
-https://sourceforge.net/projects/javaarduinolibrary/ 
+- Checkout branch lesson_4
+
+- start application server from prepared binaries:
+
+```bash
+java -jar lesson5/tank-controller-api.jar
+```
+
+(!) Assumption: Java Runtime Environment is installed on a computer
+```bash
+java -version
+```
+should print installed java version on a console
+
+- test your API using Postman HTTP client:
+```https://app.getpostman.com```
+You can import postman API collection from: lesson5/tank-api.postman_collection.json
+
+- There are 4 mistakes in a postman collection.
+
+As an exercise try to figure out, what's the mistake (based on a API response or application logs)
+
    
