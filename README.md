@@ -56,7 +56,7 @@ You can review tank specification: https://www.robotshop.com/en/dfrobotshop-rove
 - start application server from prepared binaries:
 
 ```bash
-java -jar lesson5/tank-controller-api.jar
+java -jar lesson_4/tank-controller-api.jar
 ```
 
 (!) Assumption: Java Runtime Environment is installed on a computer
