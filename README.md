@@ -73,4 +73,12 @@ You can import postman API collection from: lesson5/tank-api.postman_collection.
 
 As an exercise try to figure out, what's the mistake (based on a API response or application logs)
 
-   
+## Lesson 5
+
+- Follow the instructions for a lesson 4
+
+## Lesson 6
+
+
+
+
