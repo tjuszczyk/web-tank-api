@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.tj.tanks.services.TankController;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/tank-controller")
 public class TanksControllerResource {
