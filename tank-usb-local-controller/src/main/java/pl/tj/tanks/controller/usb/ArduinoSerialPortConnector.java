@@ -23,37 +23,38 @@ public class ArduinoSerialPortConnector {
     }
 
     public void connectToArduinoSerialPort() {
-        try {
-            if (serialPort != null) {
-                serialPort.setBaudRate(9600);
-                serialPort.openPort();
 
-                LOG.info("Sleeping while arduino resetting");
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {/*NOOP*/ }
+        if (serialPort != null) {
+            serialPort.setBaudRate(9600);
+            serialPort.openPort();
 
-                LOG.info("Port open     :" + serialPort.isOpen());
-                LOG.info("Port baud rate:" + serialPort.getBaudRate());
-                LOG.info("Data bits     :" + serialPort.getNumDataBits());
-                LOG.info("Stop bits     :" + serialPort.getNumStopBits());
+            LOG.info("Sleeping while arduino resetting");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {/*NOOP*/ }
 
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (serialPort != null) {
-                LOG.info("Closing arduino serial port");
-                serialPort.closePort();
-            }
+            LOG.info("Port open     :" + serialPort.isOpen());
+            LOG.info("Port baud rate:" + serialPort.getBaudRate());
+            LOG.info("Data bits     :" + serialPort.getNumDataBits());
+            LOG.info("Stop bits     :" + serialPort.getNumStopBits());
+
         }
 
     }
 
 
     public String sendTankCommand(Character character) {
-
-        return "FAILED";
+        try {
+            serialPort.getOutputStream().write("wsda".getBytes());
+            serialPort.getOutputStream().flush();
+            Thread.sleep(500);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "FAILED";
+        } catch (InterruptedException e) {
+            return "FAILED";
+        }
+        return "OK";
     }
 
     public static void main(String[] args) throws IOException {
