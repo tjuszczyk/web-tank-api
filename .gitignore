@@ -25,7 +25,7 @@ gradle-app.setting
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 !arduino.jar
-!web-tank-controller-api.jar
+!tank-controller-api.jar
 
 # Cache of project
 .gradletasknamecache
