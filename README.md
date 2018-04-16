@@ -16,7 +16,7 @@ curl localhost:8080/actuator/health
 
 ### Current state
 ```bash
-curl localhost:8080/tank-controller/movement
+curl localhost:8080/api/tank-controller/movement
 ```
 
 ### Move tank in a direction
@@ -30,10 +30,11 @@ curl -H 'Content-Type: application/json' -X PUT -d '{"movement":"STOP"}' localho
 or
 
 ```bash
-http PUT localhost:8080/api/tank-controller/movement Content-Type:application/json movementDirection=FORWARD
-http PUT localhost:8080/api/tank-controller/movement Content-Type:application/json movementDirection=BACKWARD
-http PUT localhost:8080/api/tank-controller/movement Content-Type:application/json movementDirection=LEFT
-http PUT localhost:8080/api/tank-controller/movement Content-Type:application/json movementDirection=RIGHT
+http GET localhost:8080/api/tank-controller/movement Accept:application/json
+http PUT localhost:8080/api/tank-controller/movement Content-Type:application/json direction=FORWARD
+http PUT localhost:8080/api/tank-controller/movement Content-Type:application/json direction=BACKWARD
+http PUT localhost:8080/api/tank-controller/movement Content-Type:application/json direction=LEFT
+http PUT localhost:8080/api/tank-controller/movement Content-Type:application/json direction=RIGHT
 ```
 ## Tank Controller
 
