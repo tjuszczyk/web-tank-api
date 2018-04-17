@@ -17,7 +17,7 @@ public class ArduinoSerialPortConnector {
     private SerialPort serialPort;
 
     public ArduinoSerialPortConnector() {
-        Optional<SerialPort> port = new ArduinoSerialPortConnector().findArduinoUnoSerialPort();
+        Optional<SerialPort> port = findArduinoUnoSerialPort();
         serialPort = port.orElse(null);
         connectToArduinoSerialPort();
     }
@@ -45,9 +45,9 @@ public class ArduinoSerialPortConnector {
 
     public String sendTankCommand(Character character) {
         try {
-            serialPort.getOutputStream().write("wsda".getBytes());
+            serialPort.getOutputStream().write(character.toString().getBytes());
             serialPort.getOutputStream().flush();
-            Thread.sleep(500);
+            Thread.sleep(2000);
         } catch (IOException e) {
             e.printStackTrace();
             return "FAILED";
@@ -58,38 +58,28 @@ public class ArduinoSerialPortConnector {
     }
 
     public static void main(String[] args) throws IOException {
-        Optional<SerialPort> port = new ArduinoSerialPortConnector().findArduinoUnoSerialPort();
-        SerialPort serialPort = port.orElseThrow(IllegalStateException::new);
-        try {
-
-            serialPort.setBaudRate(9600);
-
-            serialPort.openPort();
-
-            System.out.println("Sleeping while arduino resetting");
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {/*NOOP*/ }
-
-            System.out.println("Port open     :" + serialPort.isOpen());
-            System.out.println("Port baud rate:" + serialPort.getBaudRate());
-            System.out.println("Data bits     :" + serialPort.getNumDataBits());
-            System.out.println("Stop bits     :" + serialPort.getNumStopBits());
-
-            readStream(serialPort);
-            while (true) {
-                serialPort.getOutputStream().write("wsda".getBytes());
-                serialPort.getOutputStream().flush();
-                Thread.sleep(500);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            System.out.println("Closing");
-            port.ifPresent(SerialPort::closePort);
+        ArduinoSerialPortConnector arduino = new ArduinoSerialPortConnector();
+       char[] chars = new char[]{'w','s','a','d'};
+        for (int i=0;i<8;i++){
+            arduino.sendTankCommand(chars[i%4]);
         }
+        arduino.sendTankCommand('q');
 
+//        try {
+//            readStream(serialPort);
+//            while (true) {
+//                serialPort.getOutputStream().write("wsda".getBytes());
+//                serialPort.getOutputStream().flush();
+//                Thread.sleep(500);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            System.out.println("Closing");
+//            port.ifPresent(SerialPort::closePort);
+//        }
+//
 
 //        Arduino arduinoConnector = new Arduino("/dev/cu.usbmodem1431", 9600);
 //        arduinoConnector.openConnection();
