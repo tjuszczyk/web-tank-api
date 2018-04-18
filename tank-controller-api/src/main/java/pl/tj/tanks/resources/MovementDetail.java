@@ -2,6 +2,7 @@ package pl.tj.tanks.resources;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import pl.tj.tanks.controller.MovementDirection;
 
 import javax.validation.constraints.NotNull;
 
@@ -37,7 +38,4 @@ public class MovementDetail {
         return direction != null ? direction.hashCode() : 0;
     }
 
-    public enum MovementDirection {
-        FORWARD,BACKWARD,STOPPED,LEFT,RIGHT
-    }
 }

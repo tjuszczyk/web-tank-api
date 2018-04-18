@@ -2,4 +2,5 @@ rootProject.name = 'web-tank-controller-api'
 include 'tank-usb-local-controller'
 include 'tank-controller-api'
 include 'tank'
+include 'tank-controller-model'
 

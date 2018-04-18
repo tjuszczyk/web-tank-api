@@ -5,19 +5,24 @@ import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.tj.tanks.controller.MovementDirection;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Optional;
 
-public class ArduinoSerialPortConnector {
+public class ArduinoSerialPortConnector implements pl.tj.tanks.controller.TankConnector {
     public static final Logger LOG = LoggerFactory.getLogger(ArduinoSerialPortConnector.class);
 
     private SerialPort serialPort;
 
     public ArduinoSerialPortConnector() {
-        Optional<SerialPort> port = findArduinoUnoSerialPort();
+       this(null);
+    }
+
+    public ArduinoSerialPortConnector(String serialPortIdentifier) {
+        Optional<SerialPort> port = findArduinoUnoSerialPort(Optional.ofNullable(serialPortIdentifier));
         serialPort = port.orElse(null);
         connectToArduinoSerialPort();
     }
@@ -64,27 +69,6 @@ public class ArduinoSerialPortConnector {
             arduino.sendTankCommand(chars[i%4]);
         }
         arduino.sendTankCommand('q');
-
-//        try {
-//            readStream(serialPort);
-//            while (true) {
-//                serialPort.getOutputStream().write("wsda".getBytes());
-//                serialPort.getOutputStream().flush();
-//                Thread.sleep(500);
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            System.out.println("Closing");
-//            port.ifPresent(SerialPort::closePort);
-//        }
-//
-
-//        Arduino arduinoConnector = new Arduino("/dev/cu.usbmodem1431", 9600);
-//        arduinoConnector.openConnection();
-//        arduinoConnector.serialWrite('w');
-//        arduinoConnector.closeConnection();
     }
 
     private static void readStream(SerialPort serialPort) throws IOException {
@@ -111,11 +95,14 @@ public class ArduinoSerialPortConnector {
         }).start();
     }
 
-    public Optional<SerialPort> findArduinoUnoSerialPort() {
+    public Optional<SerialPort> findArduinoUnoSerialPort(Optional<String> identifier) {
         //"/dev/cu.usbmodem1431"
         SerialPort[] commPorts = SerialPort.getCommPorts();
         return Arrays.stream(commPorts)
-                .filter(port -> port.getDescriptivePortName().contains("Arduino Uno"))
+                .filter(port -> {
+                    LOG.info("Scanning::{} - {}",port.getSystemPortName(),port.getDescriptivePortName());
+                    return port.getDescriptivePortName().contains(identifier.orElse("Arduino Uno"));
+                })
                 .findAny();
     }
 
@@ -147,6 +134,19 @@ public class ArduinoSerialPortConnector {
             }
         });
         System.out.println(":::" + dataListenerAdded);
+    }
+
+    @Override
+    public void moveTank(MovementDirection direction) {
+        LOG.info("Moving tank: {}",direction);
+        Character command = 'x';
+        switch(direction){
+            case FORWARD: command='w'; break;
+            case LEFT: command='a'; break;
+            case RIGHT: command='d'; break;
+            case BACKWARD: command='s'; break;
+        }
+        sendTankCommand(command);
     }
 }
 ///dev/cu.usbmodem1431

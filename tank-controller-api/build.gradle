@@ -23,9 +23,13 @@ repositories {
 }
 
 dependencies {
+    compile project(':tank-usb-local-controller')
+    compile project(':tank-controller-model')
+    compile group: 'javax.inject', name: 'javax.inject', version: '1'
     compile("org.springframework.boot:spring-boot-starter-web")
-
     compile("org.springframework.boot:spring-boot-starter-actuator")
+//    compile group: 'org.springframework', name: 'spring-beans', version: '5.0.4.RELEASE'
+
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     compile group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.25'
 
